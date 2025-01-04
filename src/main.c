@@ -4,7 +4,8 @@
 
 extern Train *create_mock_train();
 
-void display_menu() {
+void display_menu()
+{
     printf("=== Train Loading Management System ===\n");
     printf("1. Load train status from file\n");
     printf("2. Load material, starting from first suitable wagon from head of the Train\n");
@@ -18,23 +19,40 @@ void display_menu() {
     printf("10. Exit\n");
 }
 
-int main() {
+int main()
+{
     Train *train = create_mock_train();
 
     MaterialType materials[] = {
         {"Large Box", 200.0, 50, 5},
         {"Medium Box", 150.0, 50, 10},
-        {"Small Box", 100.0, 50, 15}
-    };
+        {"Small Box", 100.0, 50, 15}};
     int material_count = 3;
 
     int choice;
-    while (1) {
+    while (1)
+    {
         display_menu();
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
-        switch (choice) {
+        switch (choice)
+        {
+        case 2:
+            printf("Select material to load:\n");
+            printf("1. Large Box\n2. Medium Box\n3. Small Box\n");
+            int material_choice;
+            scanf("%d", &material_choice);
+
+            if (material_choice >= 1 && material_choice <= material_count)
+            {
+                load_material_to_train(train, &materials[material_choice - 1]);
+            }
+            else
+            {
+                printf("\nInvalid material choice.\n");
+            }
+            break;
         case 6:
             display_train_status(train);
             break;

@@ -29,5 +29,8 @@ typedef struct Train {
 
 // Function Prototypes
 void display_train_status(Train *train);
+void display_material_status(MaterialType *materials, int material_count);
+void load_material_to_train(Train *train, MaterialType *material);
+
 
 #endif
