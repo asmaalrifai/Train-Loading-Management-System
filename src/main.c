@@ -20,8 +20,15 @@ void display_menu() {
 
 int main() {
     Train *train = create_mock_train();
-    int choice;
 
+    MaterialType materials[] = {
+        {"Large Box", 200.0, 50, 5},
+        {"Medium Box", 150.0, 50, 10},
+        {"Small Box", 100.0, 50, 15}
+    };
+    int material_count = 3;
+
+    int choice;
     while (1) {
         display_menu();
         printf("Enter your choice: ");
@@ -30,6 +37,9 @@ int main() {
         switch (choice) {
         case 6:
             display_train_status(train);
+            break;
+        case 7:
+            display_material_status(materials, material_count);
             break;
         case 10:
             printf("\n==========\nExiting...\n==========\n\n");
