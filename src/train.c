@@ -125,3 +125,129 @@ void load_material_to_train(Train *train, MaterialType *material)
     }
     printf("\n==========\nMaterial loading completed.\n==========\n\n");
 }
+
+
+void load_material_to_wagon(Train *train, MaterialType *material, int wagon_id) {
+    if (train == NULL || material == NULL) {
+        printf("\n==========\nError: Train or material data is missing.\n==========\n\n");
+        return;
+    }
+
+    Wagon *current_wagon = train->first_wagon;
+
+    // Find the specified wagon by ID
+    while (current_wagon != NULL && current_wagon->wagon_id != wagon_id) {
+        current_wagon = current_wagon->next;
+    }
+
+    if (current_wagon == NULL) {
+        printf("\n==========\nError: Wagon ID %d does not exist.\n==========\n\n", wagon_id);
+        return;
+    }
+
+    int remaining_quantity = material->quantity - material->loaded;
+    if (remaining_quantity <= 0) {
+        printf("\n==========\nNo more %s available to load.\n==========\n\n", material->name);
+        return;
+    }
+
+    float available_space = current_wagon->max_weight - current_wagon->current_weight;
+    int max_loadable = (int)(available_space / material->weight);
+
+    if (max_loadable > 0) {
+        int to_load = (remaining_quantity < max_loadable) ? remaining_quantity : max_loadable;
+
+        // Update wagon and material properties
+        current_wagon->current_weight += to_load * material->weight;
+        material->loaded += to_load;
+
+        // Add to the loaded materials in the wagon
+        LoadedMaterial *new_material = (LoadedMaterial *)malloc(sizeof(LoadedMaterial));
+        new_material->type = material;
+        new_material->next = current_wagon->loaded_materials;
+        new_material->prev = NULL;
+
+        if (current_wagon->loaded_materials != NULL) {
+            current_wagon->loaded_materials->prev = new_material;
+        }
+        current_wagon->loaded_materials = new_material;
+
+        printf("\nLoaded %d %s into Wagon %d.\n", to_load, material->name, wagon_id);
+    } else {
+        printf("\n==========\nError: No space left in Wagon %d to load %s.\n==========\n\n", wagon_id, material->name);
+    }
+}
+
+
+
+void load_specified_material_to_train(Train *train, MaterialType *material, int quantity) {
+    if (train == NULL || material == NULL) {
+        printf("\n==========\nError: Train or material data is missing.\n==========\n\n");
+        return;
+    }
+
+    if (quantity <= 0 || quantity > (material->quantity - material->loaded)) {
+        printf("\n==========\nInvalid quantity. Available quantity: %d\n==========\n\n", material->quantity - material->loaded);
+        return;
+    }
+
+    int remaining_quantity = quantity;
+    Wagon *current_wagon = train->first_wagon;
+
+    while (remaining_quantity > 0) {
+        // Create a new wagon if all existing wagons are full
+        if (current_wagon == NULL) {
+            Wagon *new_wagon = (Wagon *)malloc(sizeof(Wagon));
+            new_wagon->wagon_id = train->wagon_count + 1;
+            new_wagon->max_weight = 1000.0;
+            new_wagon->current_weight = 0.0;
+            new_wagon->loaded_materials = NULL;
+            new_wagon->next = NULL;
+            new_wagon->prev = NULL;
+
+            if (train->first_wagon == NULL) {
+                train->first_wagon = new_wagon;
+            } else {
+                Wagon *last_wagon = train->first_wagon;
+                while (last_wagon->next != NULL) {
+                    last_wagon = last_wagon->next;
+                }
+                last_wagon->next = new_wagon;
+                new_wagon->prev = last_wagon;
+            }
+
+            current_wagon = new_wagon;
+            train->wagon_count++;
+        }
+
+        // Calculate available space in the current wagon
+        float available_space = current_wagon->max_weight - current_wagon->current_weight;
+        int max_loadable = (int)(available_space / material->weight);
+
+        if (max_loadable > 0) {
+            int to_load = (remaining_quantity < max_loadable) ? remaining_quantity : max_loadable;
+
+            // Update wagon and material properties
+            current_wagon->current_weight += to_load * material->weight;
+            material->loaded += to_load;
+            remaining_quantity -= to_load;
+
+            // Add material to the wagon
+            LoadedMaterial *new_material = (LoadedMaterial *)malloc(sizeof(LoadedMaterial));
+            new_material->type = material;
+            new_material->next = current_wagon->loaded_materials;
+            new_material->prev = NULL;
+
+            if (current_wagon->loaded_materials != NULL) {
+                current_wagon->loaded_materials->prev = new_material;
+            }
+            current_wagon->loaded_materials = new_material;
+
+            printf("\nLoaded %d %s into Wagon %d.\n", to_load, material->name, current_wagon->wagon_id);
+        }
+
+        current_wagon = current_wagon->next;
+    }
+
+    printf("\n==========\nMaterial loading completed.\n==========\n\n");
+}

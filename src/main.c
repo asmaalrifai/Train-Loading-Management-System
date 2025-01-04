@@ -30,6 +30,7 @@ int main()
     int material_count = 3;
 
     int choice;
+    int material_choice; // Declare once here
     while (1)
     {
         display_menu();
@@ -39,29 +40,54 @@ int main()
         switch (choice)
         {
         case 2:
+    printf("Select material to load:\n");
+    printf("1. Large Box\n2. Medium Box\n3. Small Box\n");
+    int material_choice;
+    scanf("%d", &material_choice);
+
+    if (material_choice >= 1 && material_choice <= material_count) {
+        printf("Enter the number of materials to load: ");
+        int quantity;
+        scanf("%d", &quantity);
+
+        load_specified_material_to_train(train, &materials[material_choice - 1], quantity);
+    } else {
+        printf("\nInvalid material choice.\n");
+    }
+    break;
+
+
+        case 3:
+            printf("Enter Wagon ID: ");
+            int wagon_id;
+            scanf("%d", &wagon_id);
+
             printf("Select material to load:\n");
             printf("1. Large Box\n2. Medium Box\n3. Small Box\n");
-            int material_choice;
             scanf("%d", &material_choice);
 
             if (material_choice >= 1 && material_choice <= material_count)
             {
-                load_material_to_train(train, &materials[material_choice - 1]);
+                load_material_to_wagon(train, &materials[material_choice - 1], wagon_id);
             }
             else
             {
                 printf("\nInvalid material choice.\n");
             }
             break;
+
         case 6:
             display_train_status(train);
             break;
+
         case 7:
             display_material_status(materials, material_count);
             break;
+
         case 10:
             printf("\n==========\nExiting...\n==========\n\n");
             exit(0);
+
         default:
             printf("\n==========\nOption not implemented yet.\n==========\n\n");
         }
