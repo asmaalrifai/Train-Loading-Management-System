@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "material.h": "c",
+        "wagon.h": "c",
+        "train.h": "c",
+        "file_ops.h": "c",
+        "stdio.h": "c",
+        "stdlib.h": "c"
+    }
+}
