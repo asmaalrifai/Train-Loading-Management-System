@@ -32,15 +32,22 @@ typedef struct Train
     int wagon_count;    // Total wagons
 } Train;
 
-//6, 7
-void display_train_status(Train *train); //
+// 6, 7
+void display_train_status(Train *train);                                   //
 void display_material_status(MaterialType *materials, int material_count); //
 
 Train *create_mock_train(); //
 
 // 2, 3
 // void load_material_to_train(Train *train, MaterialType *material);
-void load_material_to_wagon(Train *train, MaterialType *material, int wagon_id); //
-void load_specified_material_to_train(Train *train, MaterialType *material, int quantity); //
+void load_material_to_wagon_main(Train *train, MaterialType *material, int wagon_id);           //
+void load_specified_material_to_train_main(Train *train, MaterialType *material, int quantity); //
+
+// 4, 5
+void unload_material_from_tail(Train *train);
+void unload_material_from_wagon(Train *train, MaterialType *materials, int material_count);
+
+// 8
+void empty_train_or_wagon(Train *train);
 
 #endif

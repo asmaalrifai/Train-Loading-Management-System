@@ -1,6 +1,7 @@
 // train.c
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "../include/train.h"
 
@@ -227,6 +228,31 @@ void load_material_to_wagon(Train *train, MaterialType *material, int wagon_id)
     printf("\nLoaded 1 %s into Wagon %d.\n", material->name, wagon_id);
 }
 
+void load_material_to_wagon_main(Train *train, MaterialType *materials, int material_count)
+{
+    printf("Enter Wagon ID: ");
+    int wagon_id;
+    scanf("%d", &wagon_id);
+
+    printf("Select material to load:\n");
+    for (int i = 0; i < material_count; i++)
+    {
+        printf("%d. %s\n", i + 1, materials[i].name);
+    }
+
+    int material_choice;
+    scanf("%d", &material_choice);
+
+    if (material_choice >= 1 && material_choice <= material_count)
+    {
+        load_material_to_wagon(train, &materials[material_choice - 1], wagon_id);
+    }
+    else
+    {
+        printf("\nInvalid material choice.\n");
+    }
+}
+
 void load_specified_material_to_train(Train *train, MaterialType *material, int quantity)
 {
     if (train == NULL || material == NULL)
@@ -263,4 +289,371 @@ void load_specified_material_to_train(Train *train, MaterialType *material, int 
     }
 
     printf("\n==========\nMaterial loading completed.\n==========\n\n");
+}
+
+void load_specified_material_to_train_main(Train *train, MaterialType *materials, int material_count)
+{
+    printf("Select material to load:\n");
+    for (int i = 0; i < material_count; i++)
+    {
+        printf("%d. %s\n", i + 1, materials[i].name);
+    }
+
+    int material_choice;
+    scanf("%d", &material_choice);
+
+    if (material_choice >= 1 && material_choice <= material_count)
+    {
+        printf("Enter the number of materials to load: ");
+        int quantity;
+        scanf("%d", &quantity);
+
+        load_specified_material_to_train(train, &materials[material_choice - 1], quantity);
+    }
+    else
+    {
+        printf("\nInvalid material choice.\n");
+    }
+}
+
+// 4
+void unload_material_from_tail(Train *train)
+{
+    if (train == NULL || train->first_wagon == NULL)
+    {
+        printf("\n==========\nError: Train or wagons are missing.\n==========\n\n");
+        return;
+    }
+
+    int material_choice;
+    int quantity_to_unload;
+
+    // Display the material options
+    printf("\nSelect material to unload:\n");
+    printf("1. Large Box\n");
+    printf("2. Medium Box\n");
+    printf("3. Small Box\n");
+    printf("Enter your choice: ");
+    scanf("%d", &material_choice);
+
+    // Map user input to the correct material
+    MaterialType *selected_material = NULL;
+
+    if (material_choice == 1)
+    {
+        selected_material = &(MaterialType){"Large Box", 200.0, 0, 0}; // Dummy type for comparison
+    }
+    else if (material_choice == 2)
+    {
+        selected_material = &(MaterialType){"Medium Box", 150.0, 0, 0};
+    }
+    else if (material_choice == 3)
+    {
+        selected_material = &(MaterialType){"Small Box", 100.0, 0, 0};
+    }
+    else
+    {
+        printf("\n==========\nInvalid choice. Unloading aborted.\n==========\n\n");
+        return;
+    }
+
+    // Ask for the number of materials to unload
+    printf("Enter the number of materials to unload: ");
+    scanf("%d", &quantity_to_unload);
+
+    if (quantity_to_unload <= 0)
+    {
+        printf("\n==========\nInvalid quantity. Unloading aborted.\n==========\n\n");
+        return;
+    }
+
+    Wagon *current_wagon = train->first_wagon;
+
+    // Traverse to the tail of the train
+    while (current_wagon->next != NULL)
+    {
+        current_wagon = current_wagon->next;
+    }
+
+    // Traverse wagons from tail to head
+    while (current_wagon != NULL && quantity_to_unload > 0)
+    {
+        LoadedMaterial *current_material = current_wagon->loaded_materials;
+
+        while (current_material != NULL && quantity_to_unload > 0)
+        {
+            if (strcmp(current_material->type->name, selected_material->name) == 0)
+            {
+                // Unload one unit of the selected material
+                current_wagon->current_weight -= current_material->type->weight;
+                current_material->type->loaded -= 1;
+                quantity_to_unload--;
+
+                // Remove the material from the list if needed
+                if (current_material->prev != NULL)
+                {
+                    current_material->prev->next = current_material->next;
+                }
+                else
+                {
+                    current_wagon->loaded_materials = current_material->next;
+                }
+                if (current_material->next != NULL)
+                {
+                    current_material->next->prev = current_material->prev;
+                }
+
+                LoadedMaterial *to_free = current_material;
+                current_material = current_material->next;
+                free(to_free);
+
+                printf("\n==========\nUnloaded 1 %s from Wagon %d.\n==========\n\n", selected_material->name, current_wagon->wagon_id);
+            }
+            else
+            {
+                current_material = current_material->next;
+            }
+        }
+
+        current_wagon = current_wagon->prev; // Move to the previous wagon
+    }
+
+    if (quantity_to_unload > 0)
+    {
+        printf("\n==========\nNot enough materials to unload. %d remaining.\n==========\n\n", quantity_to_unload);
+    }
+    else
+    {
+        printf("\n==========\nUnloading completed.\n==========\n\n");
+    }
+}
+
+// 5
+void unload_material_from_wagon(Train *train, MaterialType *materials, int material_count)
+{
+    if (train == NULL || train->first_wagon == NULL)
+    {
+        printf("\n==========\nError: Train or wagons are missing.\n==========\n\n");
+        return;
+    }
+
+    // Ask the user for the wagon ID
+    printf("Enter Wagon ID: ");
+    int wagon_id;
+    scanf("%d", &wagon_id);
+
+    // Find the specified wagon
+    Wagon *current_wagon = train->first_wagon;
+    while (current_wagon != NULL && current_wagon->wagon_id != wagon_id)
+    {
+        current_wagon = current_wagon->next;
+    }
+
+    if (current_wagon == NULL)
+    {
+        printf("\n==========\nError: Wagon ID %d does not exist.\n==========\n\n", wagon_id);
+        return;
+    }
+
+    // Check if the wagon has materials
+    if (current_wagon->loaded_materials == NULL)
+    {
+        printf("\n==========\nNo materials loaded in Wagon %d.\n==========\n\n", wagon_id);
+        return;
+    }
+
+    // Ask the user for the material type
+    printf("Select material to unload:\n");
+    for (int i = 0; i < material_count; i++)
+    {
+        printf("%d. %s\n", i + 1, materials[i].name);
+    }
+
+    int material_choice;
+    scanf("%d", &material_choice);
+
+    if (material_choice < 1 || material_choice > material_count)
+    {
+        printf("\n==========\nInvalid material choice.\n==========\n\n");
+        return;
+    }
+
+    MaterialType *selected_material = &materials[material_choice - 1];
+
+    // Ask the user for the quantity to unload
+    printf("Enter the number of materials to unload: ");
+    int quantity_to_unload;
+    scanf("%d", &quantity_to_unload);
+
+    if (quantity_to_unload <= 0)
+    {
+        printf("\n==========\nInvalid quantity. Unloading aborted.\n==========\n\n");
+        return;
+    }
+
+    // Traverse the LoadedMaterial list in the specified wagon
+    LoadedMaterial *current_material = current_wagon->loaded_materials;
+
+    while (current_material != NULL && quantity_to_unload > 0)
+    {
+        if (strcmp(current_material->type->name, selected_material->name) == 0)
+        {
+            // Unload one unit of the selected material
+            current_wagon->current_weight -= current_material->type->weight;
+            current_material->type->loaded -= 1;
+            quantity_to_unload--;
+
+            // Remove the material from the list if needed
+            if (current_material->prev != NULL)
+            {
+                current_material->prev->next = current_material->next;
+            }
+            else
+            {
+                current_wagon->loaded_materials = current_material->next;
+            }
+            if (current_material->next != NULL)
+            {
+                current_material->next->prev = current_material->prev;
+            }
+
+            LoadedMaterial *to_free = current_material;
+            current_material = current_material->next;
+            free(to_free);
+
+            printf("\n==========\nUnloaded 1 %s from Wagon %d.\n==========\n\n", selected_material->name, wagon_id);
+        }
+        else
+        {
+            current_material = current_material->next;
+        }
+    }
+
+    // Check if we couldn't unload all requested materials
+    if (quantity_to_unload > 0)
+    {
+        printf("\n==========\nNot enough materials to unload. %d remaining.\n==========\n\n", quantity_to_unload);
+    }
+    else
+    {
+        printf("\n==========\nUnloading completed.\n==========\n\n");
+    }
+}
+
+// 8
+void empty_specific_wagon(Wagon *wagon)
+{
+    if (wagon == NULL)
+    {
+        printf("\n==========\nError: Wagon is missing.\n==========\n\n");
+        return;
+    }
+
+    // Free all materials in the wagon
+    LoadedMaterial *current_material = wagon->loaded_materials;
+    while (current_material != NULL)
+    {
+        LoadedMaterial *to_free = current_material;
+        current_material = current_material->next;
+        free(to_free);
+    }
+
+    wagon->loaded_materials = NULL;
+    wagon->current_weight = 0;
+
+    printf("\n==========\nWagon %d has been emptied.\n==========\n\n", wagon->wagon_id);
+}
+
+void empty_train_or_wagon(Train *train)
+{
+    if (train == NULL || train->first_wagon == NULL)
+    {
+        printf("\n==========\nTrain is already empty.\n==========\n\n");
+        return;
+    }
+
+    // Ask the user if they want to empty a specific wagon or the entire train
+    printf("\nDo you want to empty a specific wagon or the entire train?\n");
+    printf("1. Specific Wagon\n");
+    printf("2. Entire Train\n");
+    printf("Enter your choice: ");
+    int choice;
+    scanf("%d", &choice);
+
+    if (choice == 1)
+    {
+        // Ask for the wagon ID
+        printf("Enter the Wagon ID to empty: ");
+        int wagon_id;
+        scanf("%d", &wagon_id);
+
+        // Find the wagon
+        Wagon *current_wagon = train->first_wagon;
+        while (current_wagon != NULL && current_wagon->wagon_id != wagon_id)
+        {
+            current_wagon = current_wagon->next;
+        }
+
+        if (current_wagon == NULL)
+        {
+            printf("\n==========\nError: Wagon ID %d does not exist.\n==========\n\n", wagon_id);
+            return;
+        }
+
+        // Confirm with the user
+        printf("\nAre you sure you want to empty Wagon %d? This action cannot be undone. (y/n): ", wagon_id);
+        char confirm;
+        scanf(" %c", &confirm);
+
+        if (confirm == 'y' || confirm == 'Y')
+        {
+            // Empty the specific wagon
+            empty_specific_wagon(current_wagon);
+        }
+        else
+        {
+            printf("\n==========\nOperation canceled.\n==========\n\n");
+        }
+    }
+    else if (choice == 2)
+    {
+        // Confirm with the user
+        printf("\nAre you sure you want to delete all data? This action cannot be undone. (y/n): ");
+        char confirm;
+        scanf(" %c", &confirm);
+
+        if (confirm == 'y' || confirm == 'Y')
+        {
+            // Empty the entire train
+            Wagon *current_wagon = train->first_wagon;
+
+            while (current_wagon != NULL)
+            {
+                LoadedMaterial *current_material = current_wagon->loaded_materials;
+                while (current_material != NULL)
+                {
+                    LoadedMaterial *to_free = current_material;
+                    current_material = current_material->next;
+                    free(to_free);
+                }
+
+                Wagon *to_free = current_wagon;
+                current_wagon = current_wagon->next;
+                free(to_free);
+            }
+
+            train->first_wagon = NULL;
+            train->wagon_count = 0;
+
+            printf("\n==========\nTrain has been emptied.\n==========\n\n");
+        }
+        else
+        {
+            printf("\n==========\nOperation canceled.\n==========\n\n");
+        }
+    }
+    else
+    {
+        printf("\n==========\nInvalid choice. Operation canceled.\n==========\n\n");
+    }
 }
