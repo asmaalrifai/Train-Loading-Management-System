@@ -1,3 +1,4 @@
+// train,h
 #ifndef TRAIN_H
 #define TRAIN_H
 
@@ -31,11 +32,15 @@ typedef struct Train
     int wagon_count;    // Total wagons
 } Train;
 
-// Function Prototypes
-void display_train_status(Train *train);
-void display_material_status(MaterialType *materials, int material_count);
-void load_material_to_train(Train *train, MaterialType *material);
-void load_material_to_wagon(Train *train, MaterialType *material, int wagon_id);
-void load_specified_material_to_train(Train *train, MaterialType *material, int quantity);
+//6, 7
+void display_train_status(Train *train); //
+void display_material_status(MaterialType *materials, int material_count); //
+
+Train *create_mock_train(); //
+
+// 2, 3
+// void load_material_to_train(Train *train, MaterialType *material);
+void load_material_to_wagon(Train *train, MaterialType *material, int wagon_id); //
+void load_specified_material_to_train(Train *train, MaterialType *material, int quantity); //
 
 #endif

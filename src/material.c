@@ -1,4 +1,3 @@
-//  display_material_type() in material.c to show material inventory.
 // mateerial,c
 #include <stdio.h>
 #include "../include/train.h"
