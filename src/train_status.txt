@@ -1,0 +1,22 @@
+Train ID: T123
+Total Wagons: 2
+
+Wagon ID: 1
+  Max Weight: 1000.00 kg
+  Current Weight: 1000.00 kg
+  Loaded Materials:
+    - Large Box: 200.00 kg
+    - Large Box: 200.00 kg
+    - Large Box: 200.00 kg
+    - Large Box: 200.00 kg
+    - Large Box: 200.00 kg
+
+Wagon ID: 2
+  Max Weight: 1000.00 kg
+  Current Weight: 750.00 kg
+  Loaded Materials:
+    - Small Box: 100.00 kg
+    - Small Box: 100.00 kg
+    - Medium Box: 150.00 kg
+    - Large Box: 200.00 kg
+    - Large Box: 200.00 kg

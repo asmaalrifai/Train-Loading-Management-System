@@ -50,4 +50,10 @@ void unload_material_from_wagon(Train *train, MaterialType *materials, int mater
 // 8
 void empty_train_or_wagon(Train *train);
 
+// 9
+void save_train_status_to_file(Train *train, const char *filename);
+
+// 1
+void load_train_status_from_file(Train *train, const char *filename);
+
 #endif

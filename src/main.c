@@ -39,6 +39,9 @@ int main()
 
         switch (choice)
         {
+        case 1:
+            load_train_status_from_file(train, "train_status.txt");
+            break;
         case 2:
             load_specified_material_to_train_main(train, materials, material_count);
             break;
@@ -61,8 +64,11 @@ int main()
         case 8:
             empty_train_or_wagon(train);
             break;
-
+        case 9:
+            save_train_status_to_file(train, "train_status.txt");
+            break;
         case 10:
+            //  save_train_status_to_file(train, "train_status.txt");
             printf("\n==========\nExiting...\n==========\n\n");
             exit(0);
 
