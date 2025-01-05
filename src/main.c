@@ -24,13 +24,13 @@ int main()
     Train *train = create_mock_train();
 
     MaterialType materials[] = {
-        {"Large Box", 200.0, 50, 5},
-        {"Medium Box", 150.0, 50, 10},
-        {"Small Box", 100.0, 50, 15}};
+        {"Large Box", 200.0, 50, 0},
+        {"Medium Box", 150.0, 50, 0},
+        {"Small Box", 100.0, 50, 0}};
     int material_count = 3;
 
     int choice;
-    int material_choice; // Declare once here
+    // Declare once here
     while (1)
     {
         display_menu();
@@ -40,23 +40,24 @@ int main()
         switch (choice)
         {
         case 2:
-    printf("Select material to load:\n");
-    printf("1. Large Box\n2. Medium Box\n3. Small Box\n");
-    int material_choice;
-    scanf("%d", &material_choice);
+            printf("Select material to load:\n");
+            printf("1. Large Box\n2. Medium Box\n3. Small Box\n");
+            int material_choice_case2;
+            scanf("%d", &material_choice_case2);
 
-    if (material_choice >= 1 && material_choice <= material_count) {
-        printf("Enter the number of materials to load: ");
-        int quantity;
-        scanf("%d", &quantity);
+            if (material_choice_case2 >= 1 && material_choice_case2 <= material_count)
+            {
+                printf("Enter the number of materials to load: ");
+                int quantity;
+                scanf("%d", &quantity);
 
-        load_specified_material_to_train(train, &materials[material_choice - 1], quantity);
-    } else {
-        printf("\nInvalid material choice.\n");
-    }
-    break;
-
-
+                load_specified_material_to_train(train, &materials[material_choice_case2 - 1], quantity);
+            }
+            else
+            {
+                printf("\nInvalid material choice.\n");
+            }
+            break;
         case 3:
             printf("Enter Wagon ID: ");
             int wagon_id;
@@ -64,11 +65,12 @@ int main()
 
             printf("Select material to load:\n");
             printf("1. Large Box\n2. Medium Box\n3. Small Box\n");
-            scanf("%d", &material_choice);
+            int material_choice_case3;
+            scanf("%d", &material_choice_case3);
 
-            if (material_choice >= 1 && material_choice <= material_count)
+            if (material_choice_case3 >= 1 && material_choice_case3 <= material_count)
             {
-                load_material_to_wagon(train, &materials[material_choice - 1], wagon_id);
+                load_material_to_wagon(train, &materials[material_choice_case3 - 1], wagon_id);
             }
             else
             {

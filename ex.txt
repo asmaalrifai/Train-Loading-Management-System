@@ -1,0 +1,278 @@
+option 3 works well now, bur i have a bug in option 2, when adding the materials, the weight, count, and calculations are fine but it just display one of the material in the wagon instead of the total number
+PS C:\Users\Asmz\OneDrive\Desktop\uni\CPIII\Lab\Project\src> ./main
+=== Train Loading Management System ===
+1. Load train status from file
+2. Load material, starting from first suitable wagon from head of the Train
+3. Load material to specific wagon
+4. Unload material, starting from first suitable wagon from tail of the Train
+5. Unload material from specific wagon
+6. Display train status
+7. Display materials status
+8. Empty train
+9. Save train status to file
+10. Exit
+Enter your choice: 6
+
+==========
+Train ID: T123
+Total Wagons: 2
+==========
+Wagon ID: 1
+  Max Weight: 1000.00 kg
+  Current Weight: 0.00 kg
+  No materials loaded.
+
+Wagon ID: 2
+  Max Weight: 1000.00 kg
+  Current Weight: 0.00 kg
+  No materials loaded.
+
+=== Train Loading Management System ===
+1. Load train status from file
+2. Load material, starting from first suitable wagon from head of the Train
+3. Load material to specific wagon
+4. Unload material, starting from first suitable wagon from tail of the Train
+5. Unload material from specific wagon
+6. Display train status
+7. Display materials status
+8. Empty train
+9. Save train status to file
+10. Exit
+Enter your choice: 3
+Enter Wagon ID: 1
+Select material to load:
+1. Large Box
+2. Medium Box
+3. Small Box
+1
+
+Loaded 1 Large Box into Wagon 1.
+=== Train Loading Management System ===
+1. Load train status from file
+2. Load material, starting from first suitable wagon from head of the Train
+3. Load material to specific wagon
+4. Unload material, starting from first suitable wagon from tail of the Train
+5. Unload material from specific wagon
+6. Display train status
+7. Display materials status
+8. Empty train
+9. Save train status to file
+10. Exit
+Enter your choice: 6
+
+==========
+Train ID: T123
+Total Wagons: 2
+==========
+Wagon ID: 1
+  Max Weight: 1000.00 kg
+  Current Weight: 200.00 kg
+  Loaded Materials:
+    - Large Box: 200.00 kg
+
+Wagon ID: 2
+  Max Weight: 1000.00 kg
+  Current Weight: 0.00 kg
+  No materials loaded.
+
+=== Train Loading Management System ===
+1. Load train status from file
+2. Load material, starting from first suitable wagon from head of the Train
+3. Load material to specific wagon
+4. Unload material, starting from first suitable wagon from tail of the Train
+5. Unload material from specific wagon
+6. Display train status
+7. Display materials status
+8. Empty train
+9. Save train status to file
+10. Exit
+Enter your choice: 3
+Enter Wagon ID: 1
+Select material to load:
+1. Large Box
+2. Medium Box
+3. Small Box
+3
+
+Loaded 1 Small Box into Wagon 1.
+=== Train Loading Management System ===
+1. Load train status from file
+2. Load material, starting from first suitable wagon from head of the Train
+3. Load material to specific wagon
+4. Unload material, starting from first suitable wagon from tail of the Train
+5. Unload material from specific wagon
+6. Display train status
+7. Display materials status
+8. Empty train
+9. Save train status to file
+10. Exit
+Enter your choice: 6
+
+==========
+Train ID: T123
+Total Wagons: 2
+==========
+Wagon ID: 1
+  Max Weight: 1000.00 kg
+  Current Weight: 300.00 kg
+  Loaded Materials:
+    - Small Box: 100.00 kg
+    - Large Box: 200.00 kg
+
+Wagon ID: 2
+  Max Weight: 1000.00 kg
+  Current Weight: 0.00 kg
+  No materials loaded.
+
+=== Train Loading Management System ===
+1. Load train status from file
+2. Load material, starting from first suitable wagon from head of the Train
+3. Load material to specific wagon
+4. Unload material, starting from first suitable wagon from tail of the Train
+5. Unload material from specific wagon
+6. Display train status
+7. Display materials status
+8. Empty train
+9. Save train status to file
+10. Exit
+Enter your choice: 3
+Enter Wagon ID: 1
+Select material to load:
+1. Large Box
+2. Medium Box
+3. Small Box
+1
+
+Loaded 1 Large Box into Wagon 1.
+=== Train Loading Management System ===
+1. Load train status from file
+2. Load material, starting from first suitable wagon from head of the Train
+3. Load material to specific wagon
+4. Unload material, starting from first suitable wagon from tail of the Train
+5. Unload material from specific wagon
+6. Display train status
+7. Display materials status
+8. Empty train
+9. Save train status to file
+10. Exit
+Enter your choice: 6
+
+==========
+Train ID: T123
+Total Wagons: 2
+==========
+Wagon ID: 1
+  Max Weight: 1000.00 kg
+  Current Weight: 500.00 kg
+  Loaded Materials:
+    - Large Box: 200.00 kg
+    - Small Box: 100.00 kg
+    - Large Box: 200.00 kg
+
+Wagon ID: 2
+  Max Weight: 1000.00 kg
+  Current Weight: 0.00 kg
+  No materials loaded.
+
+=== Train Loading Management System ===
+1. Load train status from file
+2. Load material, starting from first suitable wagon from head of the Train
+3. Load material to specific wagon
+4. Unload material, starting from first suitable wagon from tail of the Train
+5. Unload material from specific wagon
+6. Display train status
+7. Display materials status
+8. Empty train
+9. Save train status to file
+10. Exit
+Enter your choice: 2
+Select material to load:
+1. Large Box
+2. Medium Box
+3. Small Box
+1
+Enter the number of materials to load: 5
+
+Loaded 2 Large Box into Wagon 1.
+
+Loaded 3 Large Box into Wagon 2.
+
+==========
+Material loading completed.
+==========
+
+=== Train Loading Management System ===
+1. Load train status from file
+2. Load material, starting from first suitable wagon from head of the Train
+3. Load material to specific wagon
+4. Unload material, starting from first suitable wagon from tail of the Train
+5. Unload material from specific wagon
+6. Display train status
+7. Display materials status
+8. Empty train
+9. Save train status to file
+10. Exit
+Enter your choice: 6
+
+==========
+Train ID: T123
+Total Wagons: 2
+==========
+Wagon ID: 1
+  Max Weight: 1000.00 kg
+  Current Weight: 900.00 kg
+  Loaded Materials:
+    - Large Box: 200.00 kg // it shouls print it twice
+    - Large Box: 200.00 kg
+    - Small Box: 100.00 kg
+    - Large Box: 200.00 kg
+
+Wagon ID: 2
+  Max Weight: 1000.00 kg
+  Current Weight: 600.00 kg
+  Loaded Materials:
+    - Large Box: 200.00 kg  // it should print it 3 times
+
+=== Train Loading Management System ===
+1. Load train status from file
+2. Load material, starting from first suitable wagon from head of the Train
+3. Load material to specific wagon
+4. Unload material, starting from first suitable wagon from tail of the Train
+5. Unload material from specific wagon
+6. Display train status
+7. Display materials status
+8. Empty train
+9. Save train status to file
+10. Exit
+Enter your choice: 7
+
+==========
+Material Status
+==========
+Material: Large Box
+  Weight: 200.00 kg
+  Total Quantity: 50
+  Loaded Quantity: 7
+
+Material: Medium Box
+  Weight: 150.00 kg
+  Total Quantity: 50
+  Loaded Quantity: 0
+
+Material: Small Box
+  Weight: 100.00 kg
+  Total Quantity: 50
+  Loaded Quantity: 1
+
+=== Train Loading Management System ===
+1. Load train status from file
+2. Load material, starting from first suitable wagon from head of the Train
+3. Load material to specific wagon
+4. Unload material, starting from first suitable wagon from tail of the Train
+5. Unload material from specific wagon
+6. Display train status
+7. Display materials status
+8. Empty train
+9. Save train status to file
+10. Exit
+Enter your choice:
