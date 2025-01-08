@@ -1,20 +1,20 @@
-# prgram:
-# 	gcc src/file_ops.c src/material.c src/test.c src/train.c src/utils.c src/wagon.c src/main.c -I include -o test
-
-
+# Compiler and flags
 CC = gcc
-CFLAGS = -Iinclude -Wall
-SRC = src/main.c src/train.c src/wagon.c src/material.c src/file_ops.c src/utils.c
-OBJ = $(SRC:.c=.o)
-TARGET = train_manager
+CFLAGS = -Wall -g -I include
 
+# Source files
+SRC = src/file_ops.c src/material.c src/train.c src/utils.c src/wagon.c src/main.c
+
+# Output executable
+TARGET = program
+
+# Default rule
 all: $(TARGET)
 
-$(TARGET): $(OBJ)
-	$(CC) -o $@ $^
+# Build the program
+$(TARGET): $(SRC)
+	$(CC) $(CFLAGS) $^ -o $@
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
+# Clean build artifacts
 clean:
-	rm -f $(OBJ) $(TARGET)
+	rm -f $(TARGET) *.o

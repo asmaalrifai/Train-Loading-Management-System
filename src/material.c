@@ -1,7 +1,13 @@
 // mateerial,c
 #include <stdio.h>
 #include <string.h>
+#include "../include/wagon.h"
 #include "../include/train.h"
+#include "../include/material.h"
+#include "../include/file_ops.h"
+#include "../include/utils.h"
+
+
 
 void display_material_status(MaterialType *materials, int material_count, Train *train) {
     if (materials == NULL || material_count == 0) {

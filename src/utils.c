@@ -1,31 +1,27 @@
 // utils.c
 #include <stdlib.h>
 #include <string.h>
+#include "../include/wagon.h"
 #include "../include/train.h"
+#include "../include/material.h"
+#include "../include/file_ops.h"
+#include "../include/utils.h"
 
-Train *create_mock_train() {
-    Train *train = (Train *)malloc(sizeof(Train));
-    strcpy(train->train_id, "T123");
-    train->wagon_count = 2;
 
-    Wagon *wagon1 = (Wagon *)malloc(sizeof(Wagon));
-    wagon1->wagon_id = 1;
-    wagon1->max_weight = 1000.0;
-    wagon1->current_weight = 0.0;
-    wagon1->loaded_materials = NULL;
-    wagon1->next = NULL;
-    wagon1->prev = NULL;
 
-    Wagon *wagon2 = (Wagon *)malloc(sizeof(Wagon));
-    wagon2->wagon_id = 2;
-    wagon2->max_weight = 1000.0;
-    wagon2->current_weight = 0.0;
-    wagon2->loaded_materials = NULL;
-    wagon2->next = NULL;
-    wagon2->prev = wagon1;
 
-    wagon1->next = wagon2;
-    train->first_wagon = wagon1;
 
-    return train;
+int check_material_availability(MaterialType *material, int quantity)
+{
+    return (quantity > 0 && quantity <= (material->quantity - material->loaded));
+}
+
+int check_wagon_space(Wagon *wagon, MaterialType *material)
+{
+    return (wagon->max_weight - wagon->current_weight >= material->weight);
+}
+
+void clear_stdin() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
 }

@@ -1,7 +1,12 @@
 // main.c
 #include <stdio.h>
 #include <stdlib.h>
+#include "../include/wagon.h"
 #include "../include/train.h"
+#include "../include/material.h"
+#include "../include/file_ops.h"
+#include "../include/utils.h"
+
 
 extern Train *create_mock_train();
 
