@@ -7,7 +7,7 @@ extern Train *create_mock_train();
 
 void display_menu()
 {
-    printf("=== Train Loading Management System ===\n");
+    printf("=== WELCOME TO ASMA AND IREM TRAIN ===\n");
     printf("1. Load train status from file\n");
     printf("2. Load material, starting from first suitable wagon from head of the Train\n");
     printf("3. Load material to specific wagon\n");
@@ -30,12 +30,28 @@ int main()
         {"Small Box", 100.0, 50, 0}};
     int material_count = 3;
 
-    int choice;
+    int choice = 0;
+    char input[50]; // Buffer for user input
+
+    load_train_status_from_file(train, "train_status.txt");
     while (1)
     {
         display_menu();
         printf("Enter your choice: ");
-        scanf("%d", &choice);
+        fgets(input, sizeof(input), stdin); // Read input as string
+
+        // Validate and convert input to integer
+        if (sscanf(input, "%d", &choice) != 1)
+        {
+            printf("\n==========\nInvalid input. Please enter a number.\n==========\n\n");
+            continue;
+        }
+
+        if (choice < 1 || choice > 10)
+        {
+            printf("\n==========\nOption unavailable.\n==========\n\n");
+            continue;
+        }
 
         switch (choice)
         {
@@ -52,14 +68,13 @@ int main()
             unload_material_from_tail(train);
             break;
         case 5:
-            unload_material_from_wagon(train, materials, material_count);
+            unload_material_from_wagon_main(train, materials, material_count);
             break;
         case 6:
             display_train_status(train);
             break;
-
         case 7:
-            display_material_status(materials, material_count);
+            display_material_status(materials, material_count, train);
             break;
         case 8:
             empty_train_or_wagon(train);
@@ -71,11 +86,12 @@ int main()
             //  save_train_status_to_file(train, "train_status.txt");
             printf("\n==========\nExiting...\n==========\n\n");
             exit(0);
-
         default:
-            printf("\n==========\nOption not implemented yet.\n==========\n\n");
+            printf("\n==========\nOption unavailable.\n==========\n\n");
         }
     }
 
     return 0;
 }
+
+//  save_train_status_to_file(train, "train_status.txt");

@@ -34,7 +34,7 @@ typedef struct Train
 
 // 6, 7
 void display_train_status(Train *train);                                   //
-void display_material_status(MaterialType *materials, int material_count); //
+void display_material_status(MaterialType *materials, int material_count, Train *train); //
 
 Train *create_mock_train(); //
 
@@ -45,7 +45,7 @@ void load_specified_material_to_train_main(Train *train, MaterialType *material,
 
 // 4, 5
 void unload_material_from_tail(Train *train);
-void unload_material_from_wagon(Train *train, MaterialType *materials, int material_count);
+void unload_material_from_wagon_main(Train *train, MaterialType *materials, int material_count);
 
 // 8
 void empty_train_or_wagon(Train *train);
