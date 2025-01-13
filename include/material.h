@@ -2,8 +2,8 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-struct Train;         // Forward declaration
-struct Wagon;         // Forward declaration
+struct Train;         
+struct Wagon;     
 
 typedef struct MaterialType {
     char name[50];

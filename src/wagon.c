@@ -1,24 +1,20 @@
-//wagon.c
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "../include/wagon.h"
 #include "../include/train.h"
 #include "../include/material.h"
-#include "../include/file_ops.h"
 #include "../include/utils.h"
 
-
-
-struct Wagon *create_new_wagon(struct Train *train)
-
-{
+// Create a new wagon
+Wagon *create_new_wagon(Train *train) {
     Wagon *new_wagon = (Wagon *)malloc(sizeof(Wagon));
-    if (!new_wagon)
-    {
+    if (!new_wagon) {
         printf("\n==========\nError: Memory allocation failed for new wagon.\n==========\n\n");
         exit(1);
     }
+
     new_wagon->wagon_id = train->wagon_count + 1;
     new_wagon->max_weight = 1000.0;
     new_wagon->current_weight = 0.0;
@@ -26,15 +22,11 @@ struct Wagon *create_new_wagon(struct Train *train)
     new_wagon->next = NULL;
     new_wagon->prev = NULL;
 
-    if (train->first_wagon == NULL)
-    {
+    if (!train->first_wagon) {
         train->first_wagon = new_wagon;
-    }
-    else
-    {
+    } else {
         Wagon *last_wagon = train->first_wagon;
-        while (last_wagon->next != NULL)
-        {
+        while (last_wagon->next) {
             last_wagon = last_wagon->next;
         }
         last_wagon->next = new_wagon;
@@ -45,55 +37,39 @@ struct Wagon *create_new_wagon(struct Train *train)
     return new_wagon;
 }
 
-void insert_material_into_wagon(Wagon *wagon, MaterialType *material)
-{
+// Insert material into the wagon
+void insert_material_into_wagon(Wagon *wagon, MaterialType *material) {
     LoadedMaterial *new_material = (LoadedMaterial *)malloc(sizeof(LoadedMaterial));
-    if (!new_material)
-    {
+    if (!new_material) {
         printf("\n==========\nError: Memory allocation failed for new material.\n==========\n\n");
         exit(1);
     }
+
     new_material->type = material;
     new_material->next = NULL;
     new_material->prev = NULL;
 
-    if (wagon->loaded_materials == NULL)
-    {
+    if (!wagon->loaded_materials) {
         wagon->loaded_materials = new_material;
-    }
-    else
-    {
+    } else {
         LoadedMaterial *current = wagon->loaded_materials;
-
-        // Traverse to find the correct position
-        while (current != NULL && current->type->weight <= material->weight)
-        {
+        while (current && current->type->weight <= material->weight) {
             current = current->next;
         }
 
-        if (current == NULL)
-        {
-            // Append at the end
+        if (!current) {
             LoadedMaterial *last = wagon->loaded_materials;
-            while (last->next != NULL)
-            {
+            while (last->next) {
                 last = last->next;
             }
             last->next = new_material;
             new_material->prev = last;
-        }
-        else
-        {
-            // Insert before current
+        } else {
             new_material->next = current;
             new_material->prev = current->prev;
-
-            if (current->prev != NULL)
-            {
+            if (current->prev) {
                 current->prev->next = new_material;
-            }
-            else
-            {
+            } else {
                 wagon->loaded_materials = new_material;
             }
             current->prev = new_material;
@@ -101,19 +77,15 @@ void insert_material_into_wagon(Wagon *wagon, MaterialType *material)
     }
 }
 
-// 8
-void empty_specific_wagon(Wagon *wagon)
-{
-    if (wagon == NULL)
-    {
+// Empty a specific wagon
+void empty_specific_wagon(Wagon *wagon) {
+    if (!wagon) {
         printf("\n==========\nError: Wagon is missing.\n==========\n\n");
         return;
     }
 
-    // Free all materials in the wagon
     LoadedMaterial *current_material = wagon->loaded_materials;
-    while (current_material != NULL)
-    {
+    while (current_material) {
         LoadedMaterial *to_free = current_material;
         current_material = current_material->next;
         free(to_free);
@@ -125,291 +97,199 @@ void empty_specific_wagon(Wagon *wagon)
     printf("\n==========\nWagon %d has been emptied.\n==========\n\n", wagon->wagon_id);
 }
 
-void load_material_to_wagon(Train *train, MaterialType *material, int wagon_id, int quantity)
-{
-    if (train == NULL || material == NULL)
-    {
-        printf("\n==========\nError: Train or material data is missing.\n==========\n\n");
+void display_wagon_status(Wagon *wagon) {
+    if (!wagon) return;
+    printf("Wagon ID: %d\n", wagon->wagon_id);
+    printf("  Max Weight: %.2f kg\n", wagon->max_weight);
+    printf("  Current Weight: %.2f kg\n", wagon->current_weight);
+    if (!wagon->loaded_materials) {
+        printf("  No materials loaded.\n");
+    } else {
+        printf("  Loaded Materials:\n");
+        LoadedMaterial *current = wagon->loaded_materials;
+        while (current) {
+            printf("    - %s: %.2f kg\n", current->type->name, current->type->weight);
+            current = current->next;
+        }
+    }
+}
+
+
+void load_material_to_wagon_main(Train *train, MaterialType *materials, int material_count) {
+    char input[50];
+    int wagon_id;
+
+    printf("Enter Wagon ID: ");
+    fgets(input, sizeof(input), stdin);
+
+    if (sscanf(input, "%d", &wagon_id) != 1) {
+        printf("\nInvalid Wagon ID. Please enter a number.\n");
+        return;
+    }
+
+    Wagon *current_wagon = train->first_wagon;
+    while (current_wagon && current_wagon->wagon_id != wagon_id) {
+        current_wagon = current_wagon->next;
+    }
+
+    if (!current_wagon) {
+        printf("\nError: Wagon ID %d does not exist.\n", wagon_id);
+        return;
+    }
+
+    printf("Select material to load:\n");
+    for (int i = 0; i < material_count; i++) {
+        printf("%d. %s\n", i + 1, materials[i].name);
+    }
+
+    int material_choice, quantity;
+    printf("Enter material choice: ");
+    fgets(input, sizeof(input), stdin);
+    sscanf(input, "%d", &material_choice);
+
+    printf("Enter quantity: ");
+    fgets(input, sizeof(input), stdin);
+    sscanf(input, "%d", &quantity);
+
+    load_material_to_wagon(train, &materials[material_choice - 1], wagon_id, quantity);
+}
+
+
+void unload_material_from_wagon_main(Train *train, MaterialType *materials, int material_count) {
+    char input[50];
+    int wagon_id;
+
+    printf("Enter Wagon ID: ");
+    fgets(input, sizeof(input), stdin);
+    sscanf(input, "%d", &wagon_id);
+
+    Wagon *current_wagon = train->first_wagon;
+    while (current_wagon && current_wagon->wagon_id != wagon_id) {
+        current_wagon = current_wagon->next;
+    }
+
+    if (!current_wagon) {
+        printf("\nError: Wagon ID %d does not exist.\n", wagon_id);
+        return;
+    }
+
+    printf("Select material to unload:\n");
+    for (int i = 0; i < material_count; i++) {
+        printf("%d. %s\n", i + 1, materials[i].name);
+    }
+
+    int material_choice, quantity;
+    printf("Enter material choice: ");
+    fgets(input, sizeof(input), stdin);
+    sscanf(input, "%d", &material_choice);
+
+    printf("Enter quantity: ");
+    fgets(input, sizeof(input), stdin);
+    sscanf(input, "%d", &quantity);
+
+    unload_material_from_wagon(current_wagon, &materials[material_choice - 1], quantity);
+    delete_empty_wagons(train);
+}
+
+void load_material_to_wagon(Train *train, MaterialType *material, int wagon_id, int quantity) {
+    if (!train || !material) {
+        printf("\nError: Train or material data is missing.\n");
         return;
     }
 
     Wagon *current_wagon = train->first_wagon;
 
-    // Find the specified wagon by ID
-    while (current_wagon != NULL && current_wagon->wagon_id != wagon_id)
-    {
+    // Find the wagon by its ID
+    while (current_wagon && current_wagon->wagon_id != wagon_id) {
         current_wagon = current_wagon->next;
     }
 
-    if (current_wagon == NULL)
-    {
-        printf("\n==========\nError: Wagon ID %d does not exist. Starting from the head of the train.\n==========\n\n", wagon_id);
-        current_wagon = train->first_wagon;
+    if (!current_wagon) {
+        printf("\nError: Wagon ID %d does not exist.\n", wagon_id);
+        return;
     }
 
     int remaining_quantity = quantity;
-    if (remaining_quantity > (material->quantity - material->loaded))
-    {
-        printf("\n==========\nNot enough %s available to load. Requested: %d, Available: %d\n==========\n\n",
-               material->name, quantity, material->quantity - material->loaded);
-        return;
-    }
+    while (remaining_quantity > 0) {
+        // Calculate available space in the wagon
+        float available_space = current_wagon->max_weight - current_wagon->current_weight;
 
-    // Load materials into the wagons, handling overflow
-    while (remaining_quantity > 0)
-    {
-        // Create a new wagon if needed
-        if (current_wagon == NULL)
-        {
-            current_wagon = create_new_wagon(train);
+        // Check if the wagon can accommodate more materials
+        if (available_space < material->weight) {
+            printf("\nError: Wagon %d is full or cannot accommodate more %s materials.\n", wagon_id, material->name);
+            break;
         }
 
-        // Check available space in the current wagon
-        float available_space = current_wagon->max_weight - current_wagon->current_weight;
+        // Calculate how many materials can be loaded
         int max_loadable = (int)(available_space / material->weight);
 
-        if (max_loadable > 0)
-        {
-            int to_load = (remaining_quantity < max_loadable) ? remaining_quantity : max_loadable;
+        // Load as many materials as possible, up to the requested quantity
+        int to_load = (remaining_quantity < max_loadable) ? remaining_quantity : max_loadable;
 
-            for (int i = 0; i < to_load; i++)
-            {
-                insert_material_into_wagon(current_wagon, material);
-                current_wagon->current_weight += material->weight;
-                material->loaded += 1;
-                remaining_quantity -= 1;
-            }
-
-            printf("\n==========\nLoaded %d %s into Wagon %d.\n==========\n\n", to_load, material->name, current_wagon->wagon_id);
+        for (int i = 0; i < to_load; i++) {
+            insert_material_into_wagon(current_wagon, material);
+            current_wagon->current_weight += material->weight;
+            material->loaded++;
+            remaining_quantity--;
         }
 
-        // Move to the next wagon
-        if (remaining_quantity > 0)
-        {
-            if (current_wagon->next == NULL)
-            {
-                current_wagon->next = create_new_wagon(train);
-                current_wagon->next->prev = current_wagon;
-            }
-            current_wagon = current_wagon->next;
+        printf("\nLoaded %d %s into Wagon %d.\n", to_load, material->name, wagon_id);
+
+        // Check if there's remaining quantity but the wagon cannot accommodate more
+        if (remaining_quantity > 0 && (current_wagon->max_weight - current_wagon->current_weight) < material->weight) {
+            printf("\nWagon %d is full. Cannot load remaining %d materials.\n", wagon_id, remaining_quantity);
+            break;
         }
     }
 
-    printf("\n==========\nMaterial loading completed.\n==========\n\n");
+    if (remaining_quantity > 0) {
+        printf("\nCould not load %d materials due to insufficient space in Wagon %d.\n", remaining_quantity, wagon_id);
+    } else {
+        printf("\nMaterial loading completed for Wagon %d.\n", wagon_id);
+    }
 }
 
-void load_material_to_wagon_main(Train *train, MaterialType *materials, int material_count)
-{
-    char input[50];
-    int wagon_id;
 
-    // Get and validate the Wagon ID
-    while (1)
-    {
-        printf("Enter Wagon ID: ");
-        fgets(input, sizeof(input), stdin);
 
-        if (sscanf(input, "%d", &wagon_id) != 1)
-        {
-            printf("\n==========\nInvalid Wagon ID. Please enter a number.\n==========\n\n");
-            continue;
-        }
-        break;
-    }
-
-    // Find the wagon
-    Wagon *current_wagon = train->first_wagon;
-    while (current_wagon != NULL && current_wagon->wagon_id != wagon_id)
-    {
-        current_wagon = current_wagon->next;
-    }
-
-    if (current_wagon == NULL)
-    {
-        printf("\n==========\nError: Wagon ID %d does not exist.\n==========\n\n", wagon_id);
+void unload_material_from_wagon(Wagon *wagon, MaterialType *material, int quantity) {
+    if (!wagon || !material) {
+        printf("\nError: Wagon or material data is missing.\n");
         return;
     }
 
-    // Select the material to load
-    printf("Select material to load:\n");
-    for (int i = 0; i < material_count; i++)
-    {
-        printf("%d. %s\n", i + 1, materials[i].name);
-    }
-
-    int material_choice;
-    while (1)
-    {
-        fgets(input, sizeof(input), stdin);
-
-        if (sscanf(input, "%d", &material_choice) != 1 || material_choice < 1 || material_choice > material_count)
-        {
-            printf("\n==========\nInvalid material choice. Please try again.\n==========\n\n");
-            continue;
-        }
-        break;
-    }
-
-    MaterialType *selected_material = &materials[material_choice - 1];
-
-    // Get the quantity to load
-    int quantity;
-    while (1)
-    {
-        printf("Enter the number of materials to load: ");
-        fgets(input, sizeof(input), stdin);
-
-        if (sscanf(input, "%d", &quantity) != 1 || quantity <= 0)
-        {
-            printf("\n==========\nInvalid quantity. Please enter a positive number.\n==========\n\n");
-            continue;
-        }
-        break;
-    }
-
-    load_material_to_wagon(train, selected_material, wagon_id, quantity);
-}
-
-// 5
-void unload_material_from_wagon_main(Train *train, MaterialType *materials, int material_count)
-{
-    if (train == NULL || train->first_wagon == NULL)
-    {
-        printf("\n==========\nError: Train or wagons are missing.\n==========\n\n");
-        return;
-    }
-
-    char input[50];
-    int wagon_id;
-
-    // Get and validate the Wagon ID
-    while (1)
-    {
-        printf("Enter Wagon ID: ");
-        fgets(input, sizeof(input), stdin);
-
-        if (sscanf(input, "%d", &wagon_id) != 1 || wagon_id <= 0)
-        {
-            printf("\n==========\nInvalid Wagon ID. Please enter a valid number.\n==========\n\n");
-            continue;
-        }
-        break;
-    }
-
-    // Find the specified wagon
-    Wagon *current_wagon = train->first_wagon;
-    while (current_wagon != NULL && current_wagon->wagon_id != wagon_id)
-    {
-        current_wagon = current_wagon->next;
-    }
-
-    if (current_wagon == NULL)
-    {
-        printf("\n==========\nError: Wagon ID %d does not exist.\n==========\n\n", wagon_id);
-        return;
-    }
-
-    // Check if the wagon has materials
-    if (current_wagon->loaded_materials == NULL)
-    {
-        printf("\n==========\nNo materials loaded in Wagon %d.\n==========\n\n", wagon_id);
-        return;
-    }
-
-    // Ask the user for the material type
-    printf("Select material to unload:\n");
-    for (int i = 0; i < material_count; i++)
-    {
-        printf("%d. %s\n", i + 1, materials[i].name);
-    }
-
-    int material_choice;
-    while (1)
-    {
-        printf("Enter your choice: ");
-        fgets(input, sizeof(input), stdin);
-
-        if (sscanf(input, "%d", &material_choice) != 1 || material_choice < 1 || material_choice > material_count)
-        {
-            printf("\n==========\nInvalid material choice. Please try again.\n==========\n\n");
-            continue;
-        }
-        break;
-    }
-
-    MaterialType *selected_material = &materials[material_choice - 1];
-
-    // Ask the user for the quantity to unload
-    int quantity_to_unload;
-    while (1)
-    {
-        printf("Enter the number of materials to unload: ");
-        fgets(input, sizeof(input), stdin);
-
-        if (sscanf(input, "%d", &quantity_to_unload) != 1 || quantity_to_unload <= 0)
-        {
-            printf("\n==========\nInvalid quantity. Please enter a positive number.\n==========\n\n");
-            continue;
-        }
-        break;
-    }
-
-    // Traverse the LoadedMaterial list in the specified wagon
-    LoadedMaterial *current_material = current_wagon->loaded_materials;
+    LoadedMaterial *current_material = wagon->loaded_materials;
     int unloaded_count = 0;
 
-    while (current_material != NULL && quantity_to_unload > 0)
-    {
-        if (strcmp(current_material->type->name, selected_material->name) == 0)
-        {
-            // Unload one unit of the selected material
-            current_wagon->current_weight -= current_material->type->weight;
-            current_material->type->loaded -= 1;
-            quantity_to_unload--;
+    while (current_material && quantity > 0) {
+        if (strcmp(current_material->type->name, material->name) == 0) {
+            wagon->current_weight -= material->weight;
+            material->loaded--;
+            quantity--;
             unloaded_count++;
 
-            // Remove the material from the list if needed
-            if (current_material->prev != NULL)
-            {
+            if (current_material->prev) {
                 current_material->prev->next = current_material->next;
+            } else {
+                wagon->loaded_materials = current_material->next;
             }
-            else
-            {
-                current_wagon->loaded_materials = current_material->next;
-            }
-            if (current_material->next != NULL)
-            {
+            if (current_material->next) {
                 current_material->next->prev = current_material->prev;
             }
 
             LoadedMaterial *to_free = current_material;
             current_material = current_material->next;
             free(to_free);
-        }
-        else
-        {
+        } else {
             current_material = current_material->next;
         }
     }
 
-    // Check if we couldn't unload all requested materials
-    if (quantity_to_unload > 0)
-    {
-        printf("\n==========\nNot enough materials to unload. %d remaining.\n==========\n\n", quantity_to_unload);
-    }
-    else
-    {
-        printf("\n==========\nUnloaded %d %s from Wagon %d.\n==========\n\n", unloaded_count, selected_material->name, wagon_id);
-    }
-    // Call the function to delete empty wagons and renumber
-    delete_empty_wagons(train);
+    printf("\nUnloaded %d %s from Wagon %d.\n", unloaded_count, material->name, wagon->wagon_id);
 }
 
-void delete_empty_wagons(Train *train)
-{
-    if (train == NULL || train->first_wagon == NULL)
-    {
-        printf("\n==========\nError: Train or wagons are missing.\n==========\n\n");
+void delete_empty_wagons(Train *train) {
+    if (!train || !train->first_wagon) {
+        printf("\n==========\nTrain or wagons are missing.\n==========\n\n");
         return;
     }
 
@@ -417,36 +297,28 @@ void delete_empty_wagons(Train *train)
     Wagon *previous_wagon = NULL;
     int new_wagon_id = 1; // Start renumbering from 1
 
-    while (current_wagon != NULL)
-    {
+    while (current_wagon != NULL) {
         // Check if the wagon is empty
-        if (current_wagon->loaded_materials == NULL && current_wagon->current_weight == 0)
-        {
+        if (current_wagon->current_weight == 0 && current_wagon->loaded_materials == NULL) {
             // Remove the empty wagon
             Wagon *to_free = current_wagon;
 
-            if (previous_wagon == NULL)
-            {
+            if (previous_wagon == NULL) {
                 // If it's the first wagon, update the train's head
                 train->first_wagon = current_wagon->next;
-            }
-            else
-            {
+            } else {
                 // Otherwise, connect the previous wagon to the next wagon
                 previous_wagon->next = current_wagon->next;
             }
 
-            if (current_wagon->next != NULL)
-            {
+            if (current_wagon->next != NULL) {
                 current_wagon->next->prev = previous_wagon;
             }
 
             current_wagon = current_wagon->next;
             free(to_free);
             train->wagon_count--;
-        }
-        else
-        {
+        } else {
             // If the wagon is not empty, renumber it
             current_wagon->wagon_id = new_wagon_id++;
             previous_wagon = current_wagon;

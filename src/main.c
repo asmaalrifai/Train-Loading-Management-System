@@ -7,8 +7,7 @@
 #include "../include/file_ops.h"
 #include "../include/utils.h"
 
-
-extern Train *create_mock_train();
+extern Train *create_train();
 
 void display_menu()
 {
@@ -27,23 +26,23 @@ void display_menu()
 
 int main()
 {
-    Train *train = create_mock_train();
+    Train *train = create_train();
 
     MaterialType materials[] = {
         {"Large Box", 200.0, 50, 0},
         {"Medium Box", 150.0, 50, 0},
         {"Small Box", 100.0, 50, 0}};
-    int material_count = 3;
+    int material_count = sizeof(materials) / sizeof(MaterialType);
 
     int choice = 0;
-    char input[50]; // Buffer for user input
+    char input[50]; // take as string to handle errors
 
-    load_train_status_from_file(train, "train_status.txt");
+    load_train_status_from_file(train, "FasterThanLight.txt");
     while (1)
     {
         display_menu();
         printf("Enter your choice: ");
-        fgets(input, sizeof(input), stdin); // Read input as string
+        fgets(input, sizeof(input), stdin);
 
         // Validate and convert input to integer
         if (sscanf(input, "%d", &choice) != 1)
@@ -61,7 +60,7 @@ int main()
         switch (choice)
         {
         case 1:
-            load_train_status_from_file(train, "train_status.txt");
+            load_train_status_from_file(train, "FasterThanLight.txt");
             break;
         case 2:
             load_specified_material_to_train_main(train, materials, material_count);
@@ -70,7 +69,7 @@ int main()
             load_material_to_wagon_main(train, materials, material_count);
             break;
         case 4:
-            unload_material_from_tail(train);
+            unload_material_from_tail(train, materials, material_count);
             break;
         case 5:
             unload_material_from_wagon_main(train, materials, material_count);
@@ -85,11 +84,11 @@ int main()
             empty_train_or_wagon(train);
             break;
         case 9:
-            save_train_status_to_file(train, "train_status.txt");
+            save_train_status_to_file(train, "FasterThanLight.txt");
             break;
         case 10:
-            //  save_train_status_to_file(train, "train_status.txt");
-            printf("\n==========\nExiting...\n==========\n\n");
+            save_train_status_to_file(train, "FasterThanLight.txt");
+            printf("\n==========\nExiting\n==========\n\n");
             exit(0);
         default:
             printf("\n==========\nOption unavailable.\n==========\n\n");
@@ -98,5 +97,3 @@ int main()
 
     return 0;
 }
-
-//  save_train_status_to_file(train, "train_status.txt");
