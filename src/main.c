@@ -7,7 +7,6 @@
 #include "../include/file_ops.h"
 #include "../include/utils.h"
 
-extern Train *create_train();
 
 void display_menu()
 {
@@ -47,7 +46,7 @@ int main()
         // Validate and convert input to integer
         if (sscanf(input, "%d", &choice) != 1)
         {
-            printf("\n==========\nInvalid input. Please enter a number.\n==========\n\n");
+            printf("\n==========\nInvalid input. enter a number.\n==========\n\n");
             continue;
         }
 

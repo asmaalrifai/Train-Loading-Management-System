@@ -123,7 +123,7 @@ void unload_material_from_tail(Train *train, MaterialType *materials, int materi
         fgets(input, sizeof(input), stdin);
 
         if (sscanf(input, "%d", &material_choice) != 1 || material_choice < 1 || material_choice > material_count) {
-            printf("\n==========\nInvalid material choice. Please try again.\n==========\n\n");
+            printf("\n==========\nInvalid material choice. \n==========\n\n");
             continue;
         }
         break;
@@ -137,7 +137,7 @@ void unload_material_from_tail(Train *train, MaterialType *materials, int materi
         fgets(input, sizeof(input), stdin);
 
         if (sscanf(input, "%d", &quantity_to_unload) != 1 || quantity_to_unload <= 0) {
-            printf("\n==========\nInvalid quantity. Please enter a positive number.\n==========\n\n");
+            printf("\n==========\nInvalid quantity. \n==========\n\n");
             continue;
         }
         break;
@@ -217,7 +217,7 @@ void load_specified_material_to_train_main(Train *train, MaterialType *materials
         fgets(input, sizeof(input), stdin);
 
         if (sscanf(input, "%d", &material_choice) != 1 || material_choice < 1 || material_choice > material_count) {
-            printf("\nInvalid material choice. Please try again.\n");
+            printf("\nInvalid material choice.\n");
             continue;
         }
         break;
@@ -228,7 +228,7 @@ void load_specified_material_to_train_main(Train *train, MaterialType *materials
         fgets(input, sizeof(input), stdin);
 
         if (sscanf(input, "%d", &quantity) != 1 || quantity <= 0) {
-            printf("\nInvalid quantity. Please enter a positive number.\n");
+            printf("\nInvalid quantity. \n");
             continue;
         }
         break;

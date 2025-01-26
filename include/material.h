@@ -1,4 +1,3 @@
-//material.h
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
@@ -19,4 +18,4 @@ typedef struct LoadedMaterial {
 
 void display_material_status(MaterialType *materials, int material_count, struct Train *train);
 
-#endif // MATERIAL_H
+#endif 

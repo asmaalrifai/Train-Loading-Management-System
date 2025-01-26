@@ -3,9 +3,9 @@
 
 #include "../include/material.h"
 
-typedef struct Train Train; // Forward declaration for Train
+typedef struct Train Train;
 
-// Wagon structure
+
 typedef struct Wagon {
     int wagon_id;                     // Unique ID for the wagon
     float max_weight;                 // Maximum weight capacity
@@ -28,4 +28,4 @@ void unload_material_from_wagon_main(Train *train, MaterialType *materials, int 
 void unload_material_from_wagon(Wagon *wagon, MaterialType *material, int quantity);
 Wagon *delete_empty_wagon_if_needed(Train *train, Wagon *wagon);
 
-#endif // WAGON_H
+#endif 

@@ -22,4 +22,4 @@ void load_specified_material_to_train_main(Train *train, MaterialType *materials
 void empty_train_or_wagon(Train *train);
 
 
-#endif // TRAIN_H
+#endif 
